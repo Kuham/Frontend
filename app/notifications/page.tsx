@@ -46,7 +46,7 @@ export default function NotificationsPage() {
       comment: {
         id: 1,
         content:
-          "프론트엔드 개발자로 참여하고 싶습니다. React와 TypeScript 경험이 있고, 머신러닝 관련 프로젝트에 관심이 많습니다.",
+            "프론트엔드 개발자로 참여하고 싶습니다. React와 TypeScript 경험이 있고, 머신러닝 관련 프로젝트에 관심이 많습니다.",
       },
     },
     {
@@ -89,105 +89,102 @@ export default function NotificationsPage() {
     },
   ])
 
-  // 알림 읽음 처리
   const markAsRead = (id: number) => {
     setNotifications((prev) =>
-      prev.map((notification) => (notification.id === id ? { ...notification, isRead: true } : notification)),
+        prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
     )
   }
 
-  // 모든 알림 읽음 처리
   const markAllAsRead = () => {
-    setNotifications((prev) => prev.map((notification) => ({ ...notification, isRead: true })))
+    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })))
   }
 
-  // 읽지 않은 알림 개수
-  const unreadCount = notifications.filter((notification) => !notification.isRead).length
+  const unreadCount = notifications.filter((n) => !n.isRead).length
 
   return (
-    <div className="container py-8">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">알림</h1>
-        {unreadCount > 0 && (
-          <Button variant="outline" size="sm" onClick={markAllAsRead}>
-            <Check className="h-4 w-4 mr-2" />
-            모두 읽음 표시
-          </Button>
-        )}
-      </div>
+      <div className="container py-8">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl font-bold">알림</h1>
+          {unreadCount > 0 && (
+              <Button variant="outline" size="sm" onClick={markAllAsRead}>
+                <Check className="h-4 w-4 mr-2" />
+                모두 읽음 표시
+              </Button>
+          )}
+        </div>
 
-      <div className="space-y-4">
-        {notifications.length > 0 ? (
-          notifications.map((notification) => (
-            <Card
-              key={notification.id}
-              className={`transition-colors ${notification.isRead ? "bg-background" : "bg-muted/30"}`}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-start gap-4">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src={notification.sender.image} alt={notification.sender.name} />
-                    <AvatarFallback>{notification.sender.name[0]}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <Link href={`/profile/${notification.sender.id}`} className="font-medium hover:underline">
-                          {notification.sender.name}
-                        </Link>
-                        {notification.type === "POST_COMMENT" ? (
-                          <span className="text-muted-foreground">
+        <div className="space-y-4">
+          {notifications.length > 0 ? (
+              notifications.map((n) => (
+                  <Card
+                      key={n.id}
+                      className={`transition-colors ${n.isRead ? "bg-background" : "bg-muted/30"}`}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-start gap-4">
+                        <Avatar className="h-10 w-10">
+                          <AvatarImage src={n.sender.image} alt={n.sender.name} />
+                          <AvatarFallback>{n.sender.name[0]}</AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <Link href={`/profile/${n.sender.id}`} className="font-medium hover:underline">
+                                {n.sender.name}
+                              </Link>
+                              {n.type === "POST_COMMENT" ? (
+                                  <span className="text-muted-foreground">
                             님이 회원님의 프로젝트{" "}
-                            <Link href={`/projects/${notification.post?.id}`} className="font-medium hover:underline">
-                              {notification.post?.title}
+                                    <Link href={`/projects/${n.post?.id}`} className="font-medium hover:underline">
+                              {n.post?.title}
                             </Link>
                             에 댓글을 남겼습니다.
                           </span>
-                        ) : (
-                          <span className="text-muted-foreground">님이 회원님의 댓글에 답글을 남겼습니다.</span>
-                        )}
+                              ) : (
+                                  <span className="text-muted-foreground">
+                            님이 회원님의 댓글에 답글을 남겼습니다.
+                          </span>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-muted-foreground whitespace-nowrap">{n.createdAt}</span>
+                              {!n.isRead && (
+                                  <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-6 w-6"
+                                      onClick={() => markAsRead(n.id)}
+                                  >
+                                    <Check className="h-3 w-3" />
+                                  </Button>
+                              )}
+                            </div>
+                          </div>
+                          <div className="mt-2 text-sm p-3 bg-muted rounded-md">{n.comment?.content}</div>
+                          <div className="mt-3 flex justify-end gap-2">
+                            <Button variant="outline" size="sm" asChild>
+                              <Link href={`/projects/${n.post?.id}`}>
+                                <MessageSquare className="h-4 w-4 mr-2" />
+                                댓글 보기
+                              </Link>
+                            </Button>
+                            <Button size="sm" asChild>
+                              <Link href={`/chat?user=${n.sender.id}`}>채팅하기</Link>
+                            </Button>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-muted-foreground whitespace-nowrap">
-                          {notification.createdAt}
-                        </span>
-                        {!notification.isRead && (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6"
-                            onClick={() => markAsRead(notification.id)}
-                          >
-                            <Check className="h-3 w-3" />
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                    <div className="mt-2 text-sm p-3 bg-muted rounded-md">{notification.comment?.content}</div>
-                    <div className="mt-3 flex justify-end gap-2">
-                      <Button variant="outline" size="sm" asChild>
-                        <Link href={`/projects/${notification.post?.id}`}>
-                          <MessageSquare className="h-4 w-4 mr-2" />
-                          댓글 보기
-                        </Link>
-                      </Button>
-                      <Button size="sm" asChild>
-                        <Link href={`/chat?user=${notification.sender.id}`}>채팅하기</Link>
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-        ) : (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <Bell className="h-12 w-12 text-muted-foreground mb-4" />
-            <h2 className="text-xl font-medium mb-2">알림이 없습니다</h2>
-            <p className="text-muted-foreground">새로운 알림이 오면 이곳에 표시됩니다.</p>
-          </div>
-        )}
+                    </CardContent>
+                  </Card>
+              ))
+          ) : (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <Bell className="h-12 w-12 text-muted-foreground mb-4" />
+                <h2 className="text-xl font-medium mb-2">알림이 없습니다</h2>
+                <p className="text-muted-foreground">새로운 알림이 오면 이곳에 표시됩니다.</p>
+              </div>
+          )}
+        </div>
       </div>
-    </div>
   )
 }
-
