@@ -132,193 +132,193 @@ export default function EditCertificationsPage() {
   }
 
   return (
-    <div className="container py-8">
-      <div className="flex items-center mb-6">
-        <Button variant="ghost" size="icon" onClick={() => router.back()} className="mr-2">
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <h1 className="text-2xl font-bold">자격증 관리</h1>
-      </div>
+      <div className="container py-8">
+        <div className="flex items-center mb-6">
+          <Button variant="ghost" size="icon" onClick={() => router.back()} className="mr-2">
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="text-2xl font-bold">자격증 관리</h1>
+        </div>
 
-      <div className="flex justify-end mb-6">
-        <Button onClick={() => setShowNewCertificationForm(true)}>
-          <Plus className="mr-2 h-4 w-4" />새 자격증 추가
-        </Button>
-      </div>
+        <div className="flex justify-end mb-6">
+          <Button onClick={() => setShowNewCertificationForm(true)}>
+            <Plus className="mr-2 h-4 w-4" />새 자격증 추가
+          </Button>
+        </div>
 
-      <div className="space-y-6">
-        {certifications.map((certification) => (
-          <Card key={certification.id}>
-            <CardContent className="p-4">
-              <div className="flex justify-between">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="text-xl font-bold">{certification.name}</h3>
-                    <Badge variant="outline">{certification.organization}</Badge>
+        <div className="space-y-6">
+          {certifications.map((certification) => (
+              <Card key={certification.id}>
+                <CardContent className="p-4">
+                  <div className="flex justify-between">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="text-xl font-bold">{certification.name}</h3>
+                        <Badge variant="outline">{certification.organization}</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-2">{formatDate(certification.date)}</p>
+                      {certification.description && <p className="text-sm">{certification.description}</p>}
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Button variant="ghost" size="icon" onClick={() => openEditDialog(certification)}>
+                        <PencilIcon className="h-4 w-4" />
+                      </Button>
+                      <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive"
+                          onClick={() => deleteCertification(certification.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
-                  <p className="text-sm text-muted-foreground mb-2">{formatDate(certification.date)}</p>
-                  {certification.description && <p className="text-sm">{certification.description}</p>}
-                </div>
-                <div className="flex flex-col gap-2">
-                  <Button variant="ghost" size="icon" onClick={() => openEditDialog(certification)}>
-                    <PencilIcon className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-destructive"
-                    onClick={() => deleteCertification(certification.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
+                </CardContent>
+              </Card>
+          ))}
+
+          {certifications.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">등록된 자격증이 없습니다. 새 자격증을 추가해보세요.</p>
               </div>
-            </CardContent>
-          </Card>
-        ))}
+          )}
+        </div>
 
-        {certifications.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">등록된 자격증이 없습니다. 새 자격증을 추가해보세요.</p>
-          </div>
+        {/* 자격증 편집 다이얼로그 */}
+        {editingCertification && (
+            <Dialog open={!!editingCertification} onOpenChange={(open) => !open && setEditingCertification(null)}>
+              <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>자격증 수정</DialogTitle>
+                  <DialogDescription>자격증 정보를 수정하고 저장하세요.</DialogDescription>
+                </DialogHeader>
+
+                <div className="grid gap-4 py-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">자격증 이름</Label>
+                    <Input
+                        id="name"
+                        value={editingCertification.name}
+                        onChange={(e) => setEditingCertification({ ...editingCertification, name: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="organization">발급 기관</Label>
+                    <Input
+                        id="organization"
+                        value={editingCertification.organization}
+                        onChange={(e) => setEditingCertification({ ...editingCertification, organization: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="date">취득일</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="w-full justify-start text-left font-normal" id="date">
+                          <Calendar className="mr-2 h-4 w-4" />
+                          {selectedDate ? formatDate(selectedDate) : "날짜 선택"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <CalendarComponent mode="single" selected={selectedDate} onSelect={setSelectedDate} initialFocus />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="description">설명 (선택사항)</Label>
+                    <Input
+                        id="description"
+                        value={editingCertification.description || ""}
+                        onChange={(e) => setEditingCertification({ ...editingCertification, description: e.target.value })}
+                        placeholder="자격증에 대한 간단한 설명"
+                    />
+                  </div>
+                </div>
+
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setEditingCertification(null)}>
+                    취소
+                  </Button>
+                  <Button onClick={updateCertification}>저장하기</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
         )}
-      </div>
 
-      {/* 자격증 편집 다이얼로그 */}
-      {editingCertification && (
-        <Dialog open={!!editingCertification} onOpenChange={(open) => !open && setEditingCertification(null)}>
-          <DialogContent className="max-w-md">
+        {/* 새 자격증 추가 다이얼로그 */}
+        <Dialog open={showNewCertificationForm} onOpenChange={setShowNewCertificationForm}>
+          <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>자격증 수정</DialogTitle>
-              <DialogDescription>자격증 정보를 수정하고 저장하세요.</DialogDescription>
+              <DialogTitle>새 자격증 추가</DialogTitle>
+              <DialogDescription>새 자격증 정보를 입력하세요.</DialogDescription>
             </DialogHeader>
 
             <div className="grid gap-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="name">자격증 이름</Label>
+                <Label htmlFor="newName">자격증 이름</Label>
                 <Input
-                  id="name"
-                  value={editingCertification.name}
-                  onChange={(e) => setEditingCertification({ ...editingCertification, name: e.target.value })}
+                    id="newName"
+                    value={newCertification.name}
+                    onChange={(e) => setNewCertification({ ...newCertification, name: e.target.value })}
+                    placeholder="예: 정보처리기사"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="organization">발급 기관</Label>
+                <Label htmlFor="newOrganization">발급 기관</Label>
                 <Input
-                  id="organization"
-                  value={editingCertification.organization}
-                  onChange={(e) => setEditingCertification({ ...editingCertification, organization: e.target.value })}
+                    id="newOrganization"
+                    value={newCertification.organization}
+                    onChange={(e) => setNewCertification({ ...newCertification, organization: e.target.value })}
+                    placeholder="예: 한국산업인력공단"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="date">취득일</Label>
+                <Label htmlFor="newDate">취득일</Label>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button variant="outline" className="w-full justify-start text-left font-normal" id="date">
+                    <Button variant="outline" className="w-full justify-start text-left font-normal" id="newDate">
                       <Calendar className="mr-2 h-4 w-4" />
-                      {selectedDate ? formatDate(selectedDate) : "날짜 선택"}
+                      {newCertDate ? formatDate(newCertDate) : "날짜 선택"}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
-                    <CalendarComponent mode="single" selected={selectedDate} onSelect={setSelectedDate} initialFocus />
+                    <CalendarComponent
+                        mode="single"
+                        selected={newCertDate}
+                        onSelect={(date) => date && setNewCertDate(date)}
+                        initialFocus
+                    />
                   </PopoverContent>
                 </Popover>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">설명 (선택사항)</Label>
+                <Label htmlFor="newDescription">설명 (선택사항)</Label>
                 <Input
-                  id="description"
-                  value={editingCertification.description || ""}
-                  onChange={(e) => setEditingCertification({ ...editingCertification, description: e.target.value })}
-                  placeholder="자격증에 대한 간단한 설명"
+                    id="newDescription"
+                    value={newCertification.description || ""}
+                    onChange={(e) => setNewCertification({ ...newCertification, description: e.target.value })}
+                    placeholder="자격증에 대한 간단한 설명"
                 />
               </div>
             </div>
 
             <DialogFooter>
-              <Button variant="outline" onClick={() => setEditingCertification(null)}>
+              <Button variant="outline" onClick={() => setShowNewCertificationForm(false)}>
                 취소
               </Button>
-              <Button onClick={updateCertification}>저장하기</Button>
+              <Button onClick={addCertification} disabled={!newCertification.name || !newCertification.organization}>
+                자격증 추가
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      )}
-
-      {/* 새 자격증 추가 다이얼로그 */}
-      <Dialog open={showNewCertificationForm} onOpenChange={setShowNewCertificationForm}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>새 자격증 추가</DialogTitle>
-            <DialogDescription>새 자격증 정보를 입력하세요.</DialogDescription>
-          </DialogHeader>
-
-          <div className="grid gap-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="newName">자격증 이름</Label>
-              <Input
-                id="newName"
-                value={newCertification.name}
-                onChange={(e) => setNewCertification({ ...newCertification, name: e.target.value })}
-                placeholder="예: 정보처리기사"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="newOrganization">발급 기관</Label>
-              <Input
-                id="newOrganization"
-                value={newCertification.organization}
-                onChange={(e) => setNewCertification({ ...newCertification, organization: e.target.value })}
-                placeholder="예: 한국산업인력공단"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="newDate">취득일</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full justify-start text-left font-normal" id="newDate">
-                    <Calendar className="mr-2 h-4 w-4" />
-                    {newCertDate ? formatDate(newCertDate) : "날짜 선택"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <CalendarComponent
-                    mode="single"
-                    selected={newCertDate}
-                    onSelect={(date) => date && setNewCertDate(date)}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="newDescription">설명 (선택사항)</Label>
-              <Input
-                id="newDescription"
-                value={newCertification.description || ""}
-                onChange={(e) => setNewCertification({ ...newCertification, description: e.target.value })}
-                placeholder="자격증에 대한 간단한 설명"
-              />
-            </div>
-          </div>
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowNewCertificationForm(false)}>
-              취소
-            </Button>
-            <Button onClick={addCertification} disabled={!newCertification.name || !newCertification.organization}>
-              자격증 추가
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
+      </div>
   )
 }
 
