@@ -110,12 +110,16 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
 
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-2">
           <div className="flex items-center gap-3">
-            <Avatar className="h-10 w-10">
-              <AvatarImage src={project.author.image} alt={project.author.name} />
-              <AvatarFallback>{project.author.name[0]}</AvatarFallback>
-            </Avatar>
+            <Link href={`/profile/${project.author.id}`} className="hover:opacity-80">
+              <Avatar className="h-10 w-10">
+                <AvatarImage src={project.author.image} alt={project.author.name} />
+                <AvatarFallback>{project.author.name[0]}</AvatarFallback>
+              </Avatar>
+            </Link>
             <div>
-              <div className="font-medium">{project.author.name}</div>
+              <Link href={`/profile/${project.author.id}`} className="hover:underline">
+                <div className="font-medium">{project.author.name}</div>
+              </Link>
               <div className="text-sm text-muted-foreground">
                 {project.author.department} · {project.author.year}
               </div>
@@ -140,30 +144,6 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
               <Bookmark className={`h-4 w-4 mr-2 ${isSaved ? "fill-current" : ""}`} />
               {isSaved ? "저장됨" : "저장하기"}
             </Button>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button size={isMobile ? "sm" : "default"}>
-                  <MessageSquare className="h-4 w-4 mr-2" />
-                  채팅하기
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>채팅 시작하기</DialogTitle>
-                  <DialogDescription>{project.author.name}님과 채팅을 시작하시겠습니까?</DialogDescription>
-                </DialogHeader>
-                <div className="flex justify-end gap-2 mt-4">
-                  <Button variant="outline">취소</Button>
-                  <Button asChild>
-                    <Link
-                      href={`/chat?user=${project.author.id}&projectId=${project.id}&projectTitle=${encodeURIComponent(project.title)}&projectDomain=${encodeURIComponent(project.domain)}&projectImage=${encodeURIComponent(project.images[0])}`}
-                    >
-                      채팅 시작
-                    </Link>
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
           </div>
         </div>
 
@@ -242,15 +222,29 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                   ))}
                 </div>
               </div>
-
-              <Button className="w-full" asChild>
-                <Link
-                  href={`/chat?user=${project.author.id}&projectId=${project.id}&projectTitle=${encodeURIComponent(project.title)}&projectDomain=${encodeURIComponent(project.domain)}&projectImage=${encodeURIComponent(project.images[0])}`}
-                >
-                  <MessageSquare className="h-4 w-4 mr-2" />
-                  채팅으로 문의하기
-                </Link>
-              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button size={isMobile ? "sm" : "default"} className="w-full">
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    채팅으로 문의하기
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>채팅하기</DialogTitle>
+                    <DialogDescription>{project.author.name}님과 채팅을 시작하시겠습니까?</DialogDescription>
+                  </DialogHeader>
+                  <div className="flex justify-end gap-2 mt-4">
+                    <Button asChild>
+                      <Link
+                          href={`/chat?user=${project.author.id}&projectId=${project.id}&projectTitle=${encodeURIComponent(project.title)}&projectDomain=${encodeURIComponent(project.domain)}&projectImage=${encodeURIComponent(project.images[0])}`}
+                      >
+                        채팅 시작
+                      </Link>
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </CardContent>
           </Card>
         </div>
