@@ -107,43 +107,44 @@ export default function ProfileEditPage() {
           <div className="flex flex-col items-center sm:flex-row sm:items-start gap-6">
             <div className="relative group">
               <Avatar className="h-24 w-24">
-                <AvatarImage src={profileData.profileImage} alt={profileData.name} />
+                <AvatarImage src={profileData.profileImage} alt={profileData.name}/>
                 <AvatarFallback>{profileData.name[0]}</AvatarFallback>
               </Avatar>
-              <div className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
-                <CameraIcon className="h-8 w-8 text-white" />
+              <div
+                  className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
+                <CameraIcon className="h-8 w-8 text-white"/>
               </div>
-              <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" />
+              <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*"/>
             </div>
             <div className="flex-1 space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">이름</Label>
-                  <Input id="name" name="name" value={profileData.name} onChange={handleProfileChange} />
+                  <Input id="name" name="name" value={profileData.name} onChange={handleProfileChange}/>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="studentId">학번</Label>
-                  <Input id="studentId" name="studentId" value={profileData.studentId} onChange={handleProfileChange} />
+                  <Input id="studentId" name="studentId" value={profileData.studentId} onChange={handleProfileChange}/>
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="department">학과</Label>
                   <Input
-                    id="department"
-                    name="department"
-                    value={profileData.department}
-                    onChange={handleProfileChange}
+                      id="department"
+                      name="department"
+                      value={profileData.department}
+                      onChange={handleProfileChange}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="year">학년</Label>
                   <Select
-                    value={profileData.year}
-                    onValueChange={(value) => setProfileData({ ...profileData, year: value })}
+                      value={profileData.year}
+                      onValueChange={(value) => setProfileData({...profileData, year: value})}
                   >
                     <SelectTrigger id="year">
-                      <SelectValue placeholder="학년 선택" />
+                      <SelectValue placeholder="학년 선택"/>
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="1학년">1학년</SelectItem>
@@ -158,7 +159,7 @@ export default function ProfileEditPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">이메일</Label>
-                <Input id="email" name="email" type="email" value={profileData.email} onChange={handleProfileChange} />
+                <Input id="email" name="email" type="email" value={profileData.email} onChange={handleProfileChange}/>
               </div>
             </div>
           </div>
@@ -166,24 +167,24 @@ export default function ProfileEditPage() {
           <div className="space-y-2">
             <Label htmlFor="bio">자기소개</Label>
             <Textarea
-              id="bio"
-              name="bio"
-              rows={4}
-              value={profileData.bio}
-              onChange={handleProfileChange}
-              className="resize-none"
+                id="bio"
+                name="bio"
+                rows={4}
+                value={profileData.bio}
+                onChange={handleProfileChange}
+                className="resize-none"
             />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="links">링크</Label>
             <Textarea
-              id="links"
-              name="links"
-              placeholder="깃허브, 웹사이트, SNS 등의 링크를 쉼표(,)로 구분하여 입력하세요"
-              value={profileData.links}
-              onChange={handleProfileChange}
-              className="resize-none"
+                id="links"
+                name="links"
+                placeholder="깃허브, 웹사이트, SNS 등의 링크를 쉼표(,)로 구분하여 입력하세요"
+                value={profileData.links}
+                onChange={handleProfileChange}
+                className="resize-none"
             />
             <p className="text-xs text-muted-foreground">예: https://github.com/username, https://yourwebsite.com</p>
           </div>
@@ -193,25 +194,25 @@ export default function ProfileEditPage() {
               <Label>기술 스택</Label>
               <div className="flex flex-wrap gap-2 mb-2">
                 {skills.map((skill) => (
-                  <Badge key={skill} variant="secondary" className="pl-2 pr-1 py-1 flex items-center gap-1">
-                    {skill}
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-5 w-5 rounded-full hover:bg-destructive/20"
-                      onClick={() => removeSkill(skill)}
-                    >
-                      <X className="h-3 w-3" />
-                    </Button>
-                  </Badge>
+                    <Badge key={skill} variant="secondary" className="pl-2 pr-1 py-1 flex items-center gap-1">
+                      {skill}
+                      <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-5 w-5 rounded-full hover:bg-destructive/20"
+                          onClick={() => removeSkill(skill)}
+                      >
+                        <X className="h-3 w-3"/>
+                      </Button>
+                    </Badge>
                 ))}
               </div>
               <div className="flex gap-2">
                 <Input
-                  placeholder="새 기술 스택 추가"
-                  value={newSkill}
-                  onChange={(e) => setNewSkill(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addSkill())}
+                    placeholder="새 기술 스택 추가"
+                    value={newSkill}
+                    onChange={(e) => setNewSkill(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addSkill())}
                 />
                 <Button type="button" onClick={addSkill}>
                   추가
@@ -223,29 +224,29 @@ export default function ProfileEditPage() {
               <Label>성격</Label>
               <div className="flex flex-wrap gap-2 mb-2">
                 {personality.map((trait) => (
-                  <Badge
-                    key={trait}
-                    variant="secondary"
-                    className="pl-2 pr-1 py-1 flex items-center gap-1 bg-primary/10"
-                  >
-                    {trait}
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-5 w-5 rounded-full hover:bg-destructive/20"
-                      onClick={() => removePersonality(trait)}
+                    <Badge
+                        key={trait}
+                        variant="secondary"
+                        className="pl-2 pr-1 py-1 flex items-center gap-1 bg-primary/10"
                     >
-                      <X className="h-3 w-3" />
-                    </Button>
-                  </Badge>
+                      {trait}
+                      <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-5 w-5 rounded-full hover:bg-destructive/20"
+                          onClick={() => removePersonality(trait)}
+                      >
+                        <X className="h-3 w-3"/>
+                      </Button>
+                    </Badge>
                 ))}
               </div>
               <div className="flex gap-2">
                 <Input
-                  placeholder="새 성격 특성 추가"
-                  value={newPersonality}
-                  onChange={(e) => setNewPersonality(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addPersonality())}
+                    placeholder="새 성격 특성 추가"
+                    value={newPersonality}
+                    onChange={(e) => setNewPersonality(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addPersonality())}
                 />
                 <Button type="button" onClick={addPersonality}>
                   추가
@@ -254,7 +255,56 @@ export default function ProfileEditPage() {
             </div>
           </div>
         </CardContent>
-        <CardFooter className="flex justify-end">
+        <div className="flex flex-wrap justify-center gap-16 mt-12">
+          <Card className="border-dashed w-full max-w-sm">
+            <CardContent className="p-6 flex flex-col items-center justify-center text-center h-[200px]">
+              <Button asChild variant="ghost" className="flex flex-col h-full w-full">
+                <Link href="/profile/edit-projects">
+                  <div className="flex flex-col items-center justify-center h-full">
+                    <div className="rounded-full bg-primary/10 p-4 mb-4">
+                      <Clipboard className="h-6 w-6 text-primary"/>
+                    </div>
+                    <h3 className="text-lg font-medium">프로젝트 수정</h3>
+                    <p className="text-sm text-muted-foreground mt-2">프로젝트 목록을 관리하고 수정하세요</p>
+                  </div>
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="border-dashed w-full max-w-sm">
+            <CardContent className="p-6 flex flex-col items-center justify-center text-center h-[200px]">
+              <Button asChild variant="ghost" className="flex flex-col h-full w-full">
+                <Link href="/profile/edit-activities">
+                  <div className="flex flex-col items-center justify-center h-full">
+                    <div className="rounded-full bg-primary/10 p-4 mb-4">
+                      <Activity className="h-6 w-6 text-primary"/>
+                    </div>
+                    <h3 className="text-lg font-medium">활동 수정</h3>
+                    <p className="text-sm text-muted-foreground mt-2">활동 내역을 관리하고 수정하세요</p>
+                  </div>
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="border-dashed w-full max-w-sm">
+            <CardContent className="p-6 flex flex-col items-center justify-center text-center h-[200px]">
+              <Button asChild variant="ghost" className="flex flex-col h-full w-full">
+                <Link href="/profile/edit-certifications">
+                  <div className="flex flex-col items-center justify-center h-full">
+                    <div className="rounded-full bg-primary/10 p-4 mb-4">
+                      <Award className="h-6 w-6 text-primary"/>
+                    </div>
+                    <h3 className="text-lg font-medium">자격증 수정</h3>
+                    <p className="text-sm text-muted-foreground mt-2">자격증 정보를 관리하고 수정하세요</p>
+                  </div>
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+        <CardFooter className="flex justify-end mt-10">
           <div className="flex gap-4">
             <Button variant="outline" onClick={() => router.back()}>
               취소
@@ -263,56 +313,6 @@ export default function ProfileEditPage() {
           </div>
         </CardFooter>
       </Card>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-        <Card className="border-dashed">
-          <CardContent className="p-6 flex flex-col items-center justify-center text-center h-[200px]">
-            <Button asChild variant="ghost" className="flex flex-col h-full w-full">
-              <Link href="/profile/edit-projects">
-                <div className="flex flex-col items-center justify-center h-full">
-                  <div className="rounded-full bg-primary/10 p-4 mb-4">
-                    <Clipboard className="h-6 w-6 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-medium">프로젝트 수정</h3>
-                  <p className="text-sm text-muted-foreground mt-2">프로젝트 목록을 관리하고 수정하세요</p>
-                </div>
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="border-dashed">
-          <CardContent className="p-6 flex flex-col items-center justify-center text-center h-[200px]">
-            <Button asChild variant="ghost" className="flex flex-col h-full w-full">
-              <Link href="/profile/edit-activities">
-                <div className="flex flex-col items-center justify-center h-full">
-                  <div className="rounded-full bg-primary/10 p-4 mb-4">
-                    <Activity className="h-6 w-6 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-medium">활동 수정</h3>
-                  <p className="text-sm text-muted-foreground mt-2">활동 내역을 관리하고 수정하세요</p>
-                </div>
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="border-dashed">
-          <CardContent className="p-6 flex flex-col items-center justify-center text-center h-[200px]">
-            <Button asChild variant="ghost" className="flex flex-col h-full w-full">
-              <Link href="/profile/edit-certifications">
-                <div className="flex flex-col items-center justify-center h-full">
-                  <div className="rounded-full bg-primary/10 p-4 mb-4">
-                    <Award className="h-6 w-6 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-medium">자격증 수정</h3>
-                  <p className="text-sm text-muted-foreground mt-2">자격증 정보를 관리하고 수정하세요</p>
-                </div>
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
     </div>
   )
 }
