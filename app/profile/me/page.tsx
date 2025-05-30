@@ -252,6 +252,14 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 </CardContent>
+                <div className="px-6 py-4 border-t">
+                  <Button asChild className="w-full">
+                    <Link href="/profile/edit" className="flex items-center justify-center">
+                      <Plus className="h-4 w-4 mr-2" />
+                      프로필 편집
+                    </Link>
+                  </Button>
+                </div>
               </Card>
             </div>
           </div>
@@ -260,12 +268,6 @@ export default function ProfilePage() {
           <div className="md:col-span-2">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold">포트폴리오</h2>
-              <Button asChild>
-                <Link href="/profile/edit">
-                  <Plus className="h-4 w-4 mr-2" />
-                  프로필 편집
-                </Link>
-              </Button>
             </div>
 
             <Tabs defaultValue="projects" className="mb-8">

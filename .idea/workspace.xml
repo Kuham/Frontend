@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="87726062-eb23-4c42-b35b-bd07998b3f52" name="변경" comment="개발 세팅">
-      <change afterPath="$PROJECT_DIR$/app/profile/add-projects/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="87726062-eb23-4c42-b35b-bd07998b3f52" name="변경" comment="fix: 프로젝트 추가 -&gt; 프로필 편집 버튼 수정" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -76,6 +73,7 @@
       <workItem from="1748010135865" duration="3424000" />
       <workItem from="1748340483314" duration="1517000" />
       <workItem from="1748420301043" duration="6118000" />
+      <workItem from="1748587024016" duration="4358000" />
     </task>
     <task id="LOCAL-00001" summary="개발 세팅">
       <option name="closed" value="true" />
@@ -109,7 +107,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748242489247</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="fix: 프로젝트 추가 -&gt; 프로필 편집 버튼 수정">
+      <option name="closed" value="true" />
+      <created>1748593299426</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1748593299426</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -128,6 +134,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="개발 세팅" />
-    <option name="LAST_COMMIT_MESSAGE" value="개발 세팅" />
+    <MESSAGE value="fix: 프로젝트 추가 -&gt; 프로필 편집 버튼 수정" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: 프로젝트 추가 -&gt; 프로필 편집 버튼 수정" />
   </component>
 </project>
