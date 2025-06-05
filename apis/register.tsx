@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { RegisterUserPayload, RegisterUserResponse } from '@/types/user';
 
+// 회원가입에는 토큰이 필요없기 때문에 custom-axios를 사용하지 않았습니다.
 export async function registerUser(
   payload: RegisterUserPayload
 ): Promise<RegisterUserResponse> {
