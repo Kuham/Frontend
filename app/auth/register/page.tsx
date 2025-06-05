@@ -2,10 +2,9 @@
 
 import React, {useEffect} from "react"
 
-import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { useState } from "react"
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -149,7 +148,7 @@ export default function RegisterPage() {
       const response = await registerUser(payload);
       console.log('가입된 사용자 정보:', response);
       alert(`환영합니다, ${response.name}님!`);
-      router.push("/");
+      router.push("/auth/login");
     } catch {
       alert('회원가입 실패 😢');
     }
@@ -232,6 +231,8 @@ export default function RegisterPage() {
                     value={formData.email}
                     onChange={handleChange}
                     required
+                    readOnly
+                    className="bg-muted cursor-not-allowed"
                   />
                 </div>
               </div>
