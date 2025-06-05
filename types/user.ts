@@ -1,4 +1,4 @@
-// 회원가입
+// 회원가입 - 요청
 export interface RegisterUserPayload {
   name: string;
   email: string;
@@ -12,6 +12,7 @@ export interface RegisterUserPayload {
   introduce: string;
 }
 
+// 회원가입 - 응답
 export interface RegisterUserResponse {
   uid: string;
   name: string;

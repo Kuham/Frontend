@@ -29,6 +29,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import {clearAllCookies} from "@/utils/clearAllCookies";
+import {deleteUser} from "@/apis/user";
+
 export default function ProfilePage() {
   const router = useRouter()
 
@@ -175,21 +178,28 @@ export default function ProfilePage() {
 
   // 로그아웃 처리
   const handleLogout = () => {
-    // 로그아웃 로직 구현
-    console.log("로그아웃")
-    // 예: localStorage 클리어, 쿠키 삭제 등
-    localStorage.removeItem("isLoggedIn")
+    clearAllCookies();
     router.push("/auth/login")
   }
 
   // 회원탈퇴 처리
-  const handleDeleteAccount = () => {
-    // 회원탈퇴 로직 구현
-    console.log("회원탈퇴")
-    // 예: API 호출하여 계정 삭제
-    localStorage.removeItem("isLoggedIn")
-    router.push("/")
-  }
+  const handleDeleteAccount = async () => {
+    try {
+      // 탈퇴 API 호출
+      await deleteUser();
+
+      // 쿠키 삭제(로그아웃 처리)
+      clearAllCookies();
+
+      // 리다이렉트
+      alert("회원탈퇴가 완료되었습니다.");
+      router.push("/auth/login");
+    } catch (err) {
+      console.error("회원탈퇴 실패:", err);
+      alert("회원탈퇴 중 오류가 발생했습니다.");
+    }
+  };
+
 
   return (
       <div className="container py-8">

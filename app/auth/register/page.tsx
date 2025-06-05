@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { X, Upload, Camera } from "lucide-react"
 import {RegisterUserPayload} from "@/types/user";
-import {registerUser} from "@/apis/register";
+import { registerUser } from "@/apis/register";
 
 export default function RegisterPage() {
   const router = useRouter()
