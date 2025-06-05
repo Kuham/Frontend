@@ -186,6 +186,14 @@ export default function EditActivitiesPage() {
               <Card key={activity.id}>
                 <CardContent className="p-4">
                   <div className="flex justify-between gap-4">
+                    <div className="relative w-32 h-32 rounded-lg overflow-hidden">
+                      <Image
+                        src={activity.image}
+                        alt={activity.title}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
                     <div className="flex-1">
                       <h3 className="text-xl font-bold">{activity.title}</h3>
                       <p className="text-sm text-muted-foreground mb-2">
@@ -194,14 +202,6 @@ export default function EditActivitiesPage() {
                       <p className="text-sm mb-2">{activity.description}</p>
                     </div>
                     <div className="flex flex-col items-center gap-4">
-                      <div className="relative w-32 h-32 rounded-lg overflow-hidden">
-                        <Image
-                            src={activity.image}
-                            alt={activity.title}
-                            fill
-                            className="object-cover"
-                        />
-                      </div>
                       <div className="flex gap-2">
                         <Button variant="ghost" size="icon" onClick={() => openEditDialog(activity)}>
                           <PencilIcon className="h-4 w-4" />

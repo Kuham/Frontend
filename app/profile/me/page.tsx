@@ -1,20 +1,41 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Github, Globe, Instagram, Mail, MessageSquare, Plus, ChevronDown, ChevronUp } from "lucide-react"
-
+import { Github, Globe, Instagram, Mail, Plus, ChevronDown, ChevronUp, LogOut, Trash2, Settings } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 export default function ProfilePage() {
+  const router = useRouter()
+
   // 샘플 사용자 데이터
   const user = {
     id: "me",
     name: "박민준",
-    username: "minjun_park",
     image: "/placeholder.svg",
     department: "인공지능학과",
     year: "석사과정",
@@ -152,6 +173,24 @@ export default function ProfilePage() {
     )
   }
 
+  // 로그아웃 처리
+  const handleLogout = () => {
+    // 로그아웃 로직 구현
+    console.log("로그아웃")
+    // 예: localStorage 클리어, 쿠키 삭제 등
+    localStorage.removeItem("isLoggedIn")
+    router.push("/auth/login")
+  }
+
+  // 회원탈퇴 처리
+  const handleDeleteAccount = () => {
+    // 회원탈퇴 로직 구현
+    console.log("회원탈퇴")
+    // 예: API 호출하여 계정 삭제
+    localStorage.removeItem("isLoggedIn")
+    router.push("/")
+  }
+
   return (
       <div className="container py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -162,11 +201,10 @@ export default function ProfilePage() {
                 <CardContent className="pt-6">
                   <div className="flex flex-col items-center text-center mb-6">
                     <Avatar className="h-24 w-24 mb-4">
-                      <AvatarImage src={user.image} alt={user.name} />
+                      <AvatarImage src={user.image || "/placeholder.svg"} alt={user.name} />
                       <AvatarFallback>{user.name[0]}</AvatarFallback>
                     </Avatar>
                     <h1 className="text-2xl font-bold">{user.name}</h1>
-                    <p className="text-muted-foreground">@{user.username}</p>
                     <div className="mt-2 space-y-1">
                       <Badge variant="outline">{user.department}</Badge>
                       <Badge variant="outline">{user.year}</Badge>
@@ -184,9 +222,9 @@ export default function ProfilePage() {
                       <h2 className="font-medium mb-2">기술 스택</h2>
                       <div className="flex flex-wrap gap-2">
                         {user.skills.map((skill) => (
-                            <Badge key={skill} variant="secondary">
-                              {skill}
-                            </Badge>
+                          <Badge key={skill} variant="secondary">
+                            {skill}
+                          </Badge>
                         ))}
                       </div>
                     </div>
@@ -195,9 +233,9 @@ export default function ProfilePage() {
                       <h2 className="font-medium mb-2">성격</h2>
                       <div className="flex flex-wrap gap-2">
                         {user.personality.map((trait) => (
-                            <Badge key={trait} variant="outline" className="bg-primary/10">
-                              {trait}
-                            </Badge>
+                          <Badge key={trait} variant="outline" className="bg-primary/10">
+                            {trait}
+                          </Badge>
                         ))}
                       </div>
                     </div>
@@ -210,55 +248,107 @@ export default function ProfilePage() {
                           <span>{user.email}</span>
                         </div>
                         {user.links.website && (
-                            <div className="flex items-center text-sm">
-                              <Globe className="h-4 w-4 mr-2 text-muted-foreground" />
-                              <a
-                                  href={user.links.website}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="hover:underline"
-                              >
-                                웹사이트
-                              </a>
-                            </div>
+                          <div className="flex items-center text-sm">
+                            <Globe className="h-4 w-4 mr-2 text-muted-foreground" />
+                            <a
+                              href={user.links.website}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="hover:underline"
+                            >
+                              웹사이트
+                            </a>
+                          </div>
                         )}
                         {user.links.github && (
-                            <div className="flex items-center text-sm">
-                              <Github className="h-4 w-4 mr-2 text-muted-foreground" />
-                              <a
-                                  href={user.links.github}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="hover:underline"
-                              >
-                                GitHub
-                              </a>
-                            </div>
+                          <div className="flex items-center text-sm">
+                            <Github className="h-4 w-4 mr-2 text-muted-foreground" />
+                            <a
+                              href={user.links.github}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="hover:underline"
+                            >
+                              GitHub
+                            </a>
+                          </div>
                         )}
                         {user.links.instagram && (
-                            <div className="flex items-center text-sm">
-                              <Instagram className="h-4 w-4 mr-2 text-muted-foreground" />
-                              <a
-                                  href={user.links.instagram}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="hover:underline"
-                              >
-                                Instagram
-                              </a>
-                            </div>
+                          <div className="flex items-center text-sm">
+                            <Instagram className="h-4 w-4 mr-2 text-muted-foreground" />
+                            <a
+                              href={user.links.instagram}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="hover:underline"
+                            >
+                              Instagram
+                            </a>
+                          </div>
                         )}
                       </div>
                     </div>
                   </div>
                 </CardContent>
-                <div className="px-6 py-4 border-t">
-                  <Button asChild className="w-full">
-                    <Link href="/profile/edit" className="flex items-center justify-center">
-                      <Plus className="h-4 w-4 mr-2" />
-                      프로필 편집
+                <div className="px-6 py-4 border-t space-y-2">
+                  <Button className="w-full" asChild>
+                    <Link href="/profile/edit">
+                      <Settings className="h-4 w-4 mr-2" />
+                      프로필 수정
                     </Link>
                   </Button>
+
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="w-full">
+                        <LogOut className="h-4 w-4 mr-2" />
+                        로그아웃
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>로그아웃</DialogTitle>
+                        <DialogDescription>정말로 로그아웃하시겠습니까?</DialogDescription>
+                      </DialogHeader>
+                      <DialogFooter>
+                        <Button variant="outline">취소</Button>
+                        <Button onClick={handleLogout}>로그아웃</Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="destructive" className="w-full">
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        회원탈퇴
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>회원탈퇴</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          정말로 회원탈퇴를 하시겠습니까? 이 작업은 되돌릴 수 없으며, 모든 데이터가 영구적으로 삭제됩니다.
+                          <br />
+                          <br />
+                          탈퇴 시 삭제되는 정보:
+                          <br />• 프로필 정보 및 포트폴리오
+                          <br />• 작성한 프로젝트 및 댓글
+                          <br />• 채팅 기록
+                          <br />• 활동 내역
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>취소</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={handleDeleteAccount}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          탈퇴하기
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </Card>
             </div>

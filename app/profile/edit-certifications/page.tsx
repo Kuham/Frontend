@@ -39,28 +39,24 @@ export default function EditCertificationsPage() {
       name: "정보처리기사",
       date: new Date("2022-05-20"),
       organization: "한국산업인력공단",
-      description: "컴퓨터 시스템의 분석, 설계, 구현, 유지보수 등의 업무를 수행하는 기술자격",
     },
     {
       id: 2,
       name: "SQLD",
       date: new Date("2021-11-15"),
       organization: "한국데이터산업진흥원",
-      description: "데이터베이스 개발 및 관리 능력을 검증하는 자격증",
     },
     {
       id: 3,
       name: "TensorFlow Developer Certificate",
       date: new Date("2023-03-08"),
       organization: "Google",
-      description: "TensorFlow를 활용한 머신러닝 모델 개발 능력을 인증하는 자격증",
     },
     {
       id: 4,
       name: "AWS Certified Solutions Architect",
       date: new Date("2022-08-25"),
       organization: "Amazon Web Services",
-      description: "AWS 클라우드 아키텍처 설계 및 구현 능력을 검증하는 자격증",
     },
   ])
 
@@ -100,7 +96,6 @@ export default function EditCertificationsPage() {
     name: "",
     date: new Date(),
     organization: "",
-    description: "",
   })
   const [newCertDate, setNewCertDate] = useState<Date>(new Date())
 
@@ -117,7 +112,6 @@ export default function EditCertificationsPage() {
       name: "",
       date: new Date(),
       organization: "",
-      description: "",
     })
     setNewCertDate(new Date())
     setShowNewCertificationForm(false)
@@ -157,7 +151,6 @@ export default function EditCertificationsPage() {
                         <Badge variant="outline">{certification.organization}</Badge>
                       </div>
                       <p className="text-sm text-muted-foreground mb-2">{formatDate(certification.date)}</p>
-                      {certification.description && <p className="text-sm">{certification.description}</p>}
                     </div>
                     <div className="flex flex-col gap-2">
                       <Button variant="ghost" size="icon" onClick={() => openEditDialog(certification)}>
@@ -226,16 +219,6 @@ export default function EditCertificationsPage() {
                       </PopoverContent>
                     </Popover>
                   </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="description">설명 (선택사항)</Label>
-                    <Input
-                        id="description"
-                        value={editingCertification.description || ""}
-                        onChange={(e) => setEditingCertification({ ...editingCertification, description: e.target.value })}
-                        placeholder="자격증에 대한 간단한 설명"
-                    />
-                  </div>
                 </div>
 
                 <DialogFooter>
@@ -295,16 +278,6 @@ export default function EditCertificationsPage() {
                     />
                   </PopoverContent>
                 </Popover>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="newDescription">설명 (선택사항)</Label>
-                <Input
-                    id="newDescription"
-                    value={newCertification.description || ""}
-                    onChange={(e) => setNewCertification({ ...newCertification, description: e.target.value })}
-                    placeholder="자격증에 대한 간단한 설명"
-                />
               </div>
             </div>
 

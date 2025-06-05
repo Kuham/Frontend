@@ -217,6 +217,14 @@ export default function EditProjectsPage() {
               <Card key={project.id}>
                 <CardContent className="p-4">
                   <div className="flex justify-between gap-4">
+                    <div className="relative w-32 h-32 rounded-lg overflow-hidden">
+                      <Image
+                        src={project.image}
+                        alt={project.title}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
                     <div className="flex-1">
                       <h3 className="text-xl font-bold">{project.title}</h3>
                       <p className="text-sm text-muted-foreground mb-2">
@@ -232,14 +240,6 @@ export default function EditProjectsPage() {
                       </div>
                     </div>
                     <div className="flex flex-col items-center gap-4">
-                      <div className="relative w-32 h-32 rounded-lg overflow-hidden">
-                        <Image
-                            src={project.image}
-                            alt={project.title}
-                            fill
-                            className="object-cover"
-                        />
-                      </div>
                       <div className="flex gap-2">
                         <Button variant="ghost" size="icon" onClick={() => openEditDialog(project)}>
                           <PencilIcon className="h-4 w-4" />

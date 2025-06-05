@@ -101,7 +101,7 @@ export default function Header() {
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[250px] sm:w-[300px]">
+                <SheetContent side="right" className="w-[250px] sm:w-[300px] flex flex-col justify-between">
                   <div className="py-4 space-y-4">
                     <Link
                       href="/"
@@ -157,6 +157,30 @@ export default function Header() {
                       )}
                     >
                       프로필 수정
+                    </Link>
+                  </div>
+                  <div className="py-4 space-y-4">
+                    <Link
+                      href="/profile/edit"
+                      className={cn(
+                        "block px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                        pathname.startsWith("/profile/edit")
+                          ? "bg-primary/10 text-primary"
+                          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                      )}
+                    >
+                      로그아웃
+                    </Link>
+                    <Link
+                      href="/profile/edit"
+                      className={cn(
+                        "block px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                        pathname.startsWith("/profile/edit")
+                          ? "bg-primary/10 text-primary"
+                          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                      )}
+                    >
+                      계정 탈퇴
                     </Link>
                   </div>
                 </SheetContent>
