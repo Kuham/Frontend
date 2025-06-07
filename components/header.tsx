@@ -11,11 +11,13 @@ import { cn } from "@/lib/utils"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Badge } from "@/components/ui/badge"
 import { useMobile } from "@/hooks/use-mobile"
+import Cookies from "js-cookie"
 
 export default function Header() {
   const pathname = usePathname()
   const isMobile = useMobile()
   const [notificationCount, setNotificationCount] = useState(3)
+  const profileUrl = Cookies.get("profileUrl")
 
   return (
     <header className="fixed top-0 left-0 right-0 h-16 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
@@ -90,7 +92,7 @@ export default function Header() {
             </Button>
             <Avatar className="h-8 w-8 cursor-pointer" asChild>
               <Link href="/profile/me">
-                <AvatarImage src="/placeholder.svg" alt="프로필" />
+                <AvatarImage src={profileUrl} alt="프로필" />
                 <AvatarFallback>사용자</AvatarFallback>
               </Link>
             </Avatar>
