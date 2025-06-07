@@ -1,6 +1,6 @@
 "use client"
 
-import type React from "react"
+import React, {useEffect} from "react"
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
@@ -15,35 +15,22 @@ import { X, CameraIcon } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Activity, Award, Clipboard } from "lucide-react"
 import Link from "next/link"
+import {GetPortfolioResponse} from "@/types/user";
+import {getActivity, getLicense, getPortfolio, getProject} from "@/apis/user";
 
 export default function ProfileEditPage() {
   const router = useRouter()
+  const [loading, setLoading] = useState(true);
 
-  // 기본 프로필 정보
-  const [profileData, setProfileData] = useState({
-    name: "박민준",
-    studentId: "20201234",
-    email: "minjun@example.com",
-    department: "인공지능학과",
-    year: "석사과정",
-    bio: "머신러닝과 데이터 사이언스를 공부하고 있는 대학원생입니다. 추천 시스템과 자연어 처리에 관심이 많습니다.",
-    profileImage: "/placeholder.svg",
-    links: "https://github.com/minjunpark, https://minjunpark.com, https://instagram.com/minjun_park",
-  })
+  // 유저 정보
+  const  [profileData, setProfileData] = useState<GetPortfolioResponse | null>(null);
 
   // 기술 스택
-  const [skills, setSkills] = useState<string[]>([
-    "Python",
-    "TensorFlow",
-    "PyTorch",
-    "NLP",
-    "데이터 분석",
-    "추천 시스템",
-  ])
+  const [skills, setSkills] = useState<string[]>([])
   const [newSkill, setNewSkill] = useState("")
 
   // 성격 특성
-  const [personality, setPersonality] = useState<string[]>(["분석적인", "성실한", "협력적인", "도전적인"])
+  const [personality, setPersonality] = useState<string[]>([])
   const [newPersonality, setNewPersonality] = useState("")
 
   // 기술 스택 추가
@@ -74,11 +61,11 @@ export default function ProfileEditPage() {
 
   // 프로필 정보 변경
   const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setProfileData({
-      ...profileData,
-      [name]: value,
-    })
+    // const { name, value } = e.target
+    // setProfileData({
+    //   ...profileData,
+    //   [name]: value,
+    // })
   }
 
   // 프로필 저장
@@ -94,6 +81,41 @@ export default function ProfileEditPage() {
     router.push("/profile/me")
   }
 
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const portfolio = await getPortfolio();
+
+        setProfileData(portfolio);
+      } catch (error) {
+        console.error('데이터 불러오기 실패:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (!profileData) return;
+
+    if (Array.isArray(profileData.stacks)) {
+      setSkills(profileData.stacks);
+    }
+    if (Array.isArray(profileData.characters)) {
+      setPersonality(profileData.characters);
+    }
+  }, [profileData]);
+
+
+
+
+  if (loading) return <p>불러오는 중...</p>;
+  if (!profileData) return <p>정보를 불러올 수 없습니다.</p>;
+
+
+
   return (
     <div className="container py-8">
       <h1 className="text-2xl font-bold mb-6">프로필 수정</h1>
@@ -107,8 +129,8 @@ export default function ProfileEditPage() {
           <div className="flex flex-col items-center sm:flex-row sm:items-start gap-6">
             <div className="relative group">
               <Avatar className="h-24 w-24">
-                <AvatarImage src={profileData.profileImage} alt={profileData.name}/>
-                <AvatarFallback>{profileData.name[0]}</AvatarFallback>
+                <AvatarImage src={profileData.profileUrl} alt={profileData.name}/>
+                <AvatarFallback>{profileData.name}</AvatarFallback>
               </Avatar>
               <div
                   className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
@@ -124,7 +146,7 @@ export default function ProfileEditPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="studentId">학번</Label>
-                  <Input id="studentId" name="studentId" value={profileData.studentId} onChange={handleProfileChange}/>
+                  <Input id="studentId" name="studentId" value={profileData.studentNumber} onChange={handleProfileChange}/>
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -133,15 +155,15 @@ export default function ProfileEditPage() {
                   <Input
                       id="department"
                       name="department"
-                      value={profileData.department}
+                      value={profileData.major}
                       onChange={handleProfileChange}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="year">학년</Label>
                   <Select
-                      value={profileData.year}
-                      onValueChange={(value) => setProfileData({...profileData, year: value})}
+                      value={profileData.grade}
+                      onValueChange={(value) => setProfileData({...profileData, grade: value})}
                   >
                     <SelectTrigger id="year">
                       <SelectValue placeholder="학년 선택"/>
@@ -159,7 +181,7 @@ export default function ProfileEditPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">이메일</Label>
-                <Input id="email" name="email" type="email" value={profileData.email} onChange={handleProfileChange}/>
+                <Input id="email" name="email" type="email" value={profileData.email} onChange={handleProfileChange} readOnly className="bg-muted cursor-not-allowed"/>
               </div>
             </div>
           </div>
@@ -170,7 +192,7 @@ export default function ProfileEditPage() {
                 id="bio"
                 name="bio"
                 rows={4}
-                value={profileData.bio}
+                value={profileData.introduce}
                 onChange={handleProfileChange}
                 className="resize-none"
             />
