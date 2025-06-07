@@ -15,18 +15,18 @@ export async function getPortfolio(): Promise<GetPortfolioResponse> {
 
 // 프로젝트 불러오기
 export async function getProject(): Promise<Project[]> {
-  const res = await axiosInstance.get<Project[]>('/portfolio/myProjects');
-  return res.data;
+  const res = await axiosInstance.get<{ projects: Project[] }>('/portfolio/myProjects');
+  return res.data.projects;
 }
 
 // 활동 불러오기
 export async function getActivity(): Promise<Activity[]> {
-  const res = await axiosInstance.get<Activity[]>('/portfolio/myActivities');
-  return res.data;
+  const res = await axiosInstance.get<{ activities: Activity[] }>('/portfolio/myActivities');
+  return res.data.activities;
 }
 
 // 자격증 불러오기
 export async function getLicense(): Promise<License[]> {
-  const res = await axiosInstance.get<License[]>('/portfolio/myLicenses');
-  return res.data;
+  const res = await axiosInstance.get<{ licenses: License[] }>('/portfolio/myLicenses');
+  return res.data.licenses;
 }

@@ -89,8 +89,8 @@ export default function ProfilePage() {
 
         setUser(portfolio);
         // expanded 추가!
-        setProjects(rawProjects.map((p) => ({ ...p, expanded: false })));
-        setActivities(rawActivities.map((a) => ({ ...a, expanded: false })));
+        setProjects(rawProjects?.map((p) => ({ ...p, expanded: false })));
+        setActivities(rawActivities?.map((a) => ({ ...a, expanded: false })));
         setCertifications(licenses);
       } catch (error) {
         console.error('데이터 불러오기 실패:', error);
