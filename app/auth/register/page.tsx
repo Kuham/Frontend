@@ -284,6 +284,17 @@ export default function RegisterPage() {
             {/* 기술 스택 */}
             <div className="space-y-4">
               <h3 className="text-lg font-medium">기술 스택</h3>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="React, Python, Figma 등"
+                  value={newTech}
+                  onChange={(e) => setNewTech(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addTechStack())}
+                />
+                <Button type="button" onClick={addTechStack}>
+                  추가
+                </Button>
+              </div>
               <div className="flex flex-wrap gap-2 mb-2">
                 {techStack.map((tech) => (
                   <Badge key={tech} variant="secondary" className="pl-2 pr-1 py-1 flex items-center gap-1">
@@ -300,22 +311,22 @@ export default function RegisterPage() {
                   </Badge>
                 ))}
               </div>
-              <div className="flex gap-2">
-                <Input
-                  placeholder="React, Python, Figma 등"
-                  value={newTech}
-                  onChange={(e) => setNewTech(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addTechStack())}
-                />
-                <Button type="button" onClick={addTechStack}>
-                  추가
-                </Button>
-              </div>
             </div>
 
             {/* 관련 링크 */}
             <div className="space-y-4">
               <h3 className="text-lg font-medium">관련 링크</h3>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="GitHub, 포트폴리오 사이트 등"
+                  value={newLink}
+                  onChange={(e) => setNewLink(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addLink())}
+                />
+                <Button type="button" onClick={addLink}>
+                  추가
+                </Button>
+              </div>
               <div className="flex flex-wrap gap-2 mb-2">
                 {links.map((link) => (
                   <Badge key={link} variant="outline" className="pl-2 pr-1 py-1 flex items-center gap-1">
@@ -332,22 +343,22 @@ export default function RegisterPage() {
                   </Badge>
                 ))}
               </div>
-              <div className="flex gap-2">
-                <Input
-                  placeholder="GitHub, 포트폴리오 사이트 등"
-                  value={newLink}
-                  onChange={(e) => setNewLink(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addLink())}
-                />
-                <Button type="button" onClick={addLink}>
-                  추가
-                </Button>
-              </div>
             </div>
 
             {/* 성격 */}
             <div className="space-y-4">
               <h3 className="text-lg font-medium">성격</h3>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="적극적인, 창의적인, 꼼꼼한 등"
+                  value={newPersonality}
+                  onChange={(e) => setNewPersonality(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addPersonalityTrait())}
+                />
+                <Button type="button" onClick={addPersonalityTrait}>
+                  추가
+                </Button>
+              </div>
               <div className="flex flex-wrap gap-2 mb-2">
                 {personality.map((trait) => (
                   <Badge key={trait} variant="outline" className="pl-2 pr-1 py-1 flex items-center gap-1 bg-primary/10">
@@ -363,17 +374,6 @@ export default function RegisterPage() {
                     </Button>
                   </Badge>
                 ))}
-              </div>
-              <div className="flex gap-2">
-                <Input
-                  placeholder="적극적인, 창의적인, 꼼꼼한 등"
-                  value={newPersonality}
-                  onChange={(e) => setNewPersonality(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addPersonalityTrait())}
-                />
-                <Button type="button" onClick={addPersonalityTrait}>
-                  추가
-                </Button>
               </div>
             </div>
 
