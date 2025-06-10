@@ -11,11 +11,13 @@ import { cn } from "@/lib/utils"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Badge } from "@/components/ui/badge"
 import { useMobile } from "@/hooks/use-mobile"
+import Cookies from "js-cookie"
 
 export default function Header() {
   const pathname = usePathname()
   const isMobile = useMobile()
   const [notificationCount, setNotificationCount] = useState(3)
+  const profileUrl = Cookies.get("profileUrl")
 
   return (
     <header className="fixed top-0 left-0 right-0 h-16 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
@@ -90,7 +92,7 @@ export default function Header() {
             </Button>
             <Avatar className="h-8 w-8 cursor-pointer" asChild>
               <Link href="/profile/me">
-                <AvatarImage src="/placeholder.svg" alt="프로필" />
+                <AvatarImage src={profileUrl} alt="프로필" />
                 <AvatarFallback>사용자</AvatarFallback>
               </Link>
             </Avatar>
@@ -101,7 +103,7 @@ export default function Header() {
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[250px] sm:w-[300px]">
+                <SheetContent side="right" className="w-[250px] sm:w-[300px] flex flex-col justify-between">
                   <div className="py-4 space-y-4">
                     <Link
                       href="/"
@@ -157,6 +159,30 @@ export default function Header() {
                       )}
                     >
                       프로필 수정
+                    </Link>
+                  </div>
+                  <div className="py-4 space-y-4">
+                    <Link
+                      href="/profile/edit"
+                      className={cn(
+                        "block px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                        pathname.startsWith("/profile/edit")
+                          ? "bg-primary/10 text-primary"
+                          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                      )}
+                    >
+                      로그아웃
+                    </Link>
+                    <Link
+                      href="/profile/edit"
+                      className={cn(
+                        "block px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                        pathname.startsWith("/profile/edit")
+                          ? "bg-primary/10 text-primary"
+                          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                      )}
+                    >
+                      계정 탈퇴
                     </Link>
                   </div>
                 </SheetContent>

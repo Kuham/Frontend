@@ -4,11 +4,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="87726062-eb23-4c42-b35b-bd07998b3f52" name="변경" comment="fix: 프로젝트 추가 -&gt; 프로필 편집 버튼 수정" />
+    <list default="true" id="87726062-eb23-4c42-b35b-bd07998b3f52" name="변경" comment="feat: 회원가입 api 연동">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/auth/register/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/auth/register/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/callback/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/callback/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript File" />
+        <option value="TypeScript JSX File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -21,8 +35,8 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;git@github.com:Kuham/Frontend.git&quot;,
-    &quot;accountId&quot;: &quot;820e4525-6ef9-48c7-b46c-4ab0ae84a844&quot;
+    &quot;url&quot;: &quot;https://github.com/Kuham/Frontend.git&quot;,
+    &quot;accountId&quot;: &quot;40a4fbf0-5d31-4ca3-9176-1db5572ebb44&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -37,21 +51,22 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;style/design-modify-hj&quot;,
     &quot;last_opened_file_path&quot;: &quot;/Users/parkkunmin/React-Project/project-kuham&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Users/parkkunmin/React-Project/project-kuham/node_modules/typescript/lib&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/hyeonjin/WebstormProjects/Frontend-kuham/node_modules/typescript/lib&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-WS-241.18034.50" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-WS-243.26053.12" />
       </set>
     </attachedChunks>
   </component>
@@ -74,6 +89,9 @@
       <workItem from="1748340483314" duration="1517000" />
       <workItem from="1748420301043" duration="6118000" />
       <workItem from="1748587024016" duration="4358000" />
+      <workItem from="1748840375380" duration="2367000" />
+      <workItem from="1749002976159" duration="11477000" />
+      <workItem from="1749093984185" duration="5381000" />
     </task>
     <task id="LOCAL-00001" summary="개발 세팅">
       <option name="closed" value="true" />
@@ -115,7 +133,31 @@
       <option name="project" value="LOCAL" />
       <updated>1748593299426</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="feat: 디자인 수정">
+      <option name="closed" value="true" />
+      <created>1749099777769</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1749099777769</updated>
+    </task>
+    <task id="LOCAL-00007" summary="feat: 구글 로그인 연결">
+      <option name="closed" value="true" />
+      <created>1749099795737</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1749099795737</updated>
+    </task>
+    <task id="LOCAL-00008" summary="feat: 회원가입 api 연동">
+      <option name="closed" value="true" />
+      <created>1749099808888</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1749099808888</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -135,6 +177,9 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="개발 세팅" />
     <MESSAGE value="fix: 프로젝트 추가 -&gt; 프로필 편집 버튼 수정" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: 프로젝트 추가 -&gt; 프로필 편집 버튼 수정" />
+    <MESSAGE value="feat: 디자인 수정" />
+    <MESSAGE value="feat: 구글 로그인 연결" />
+    <MESSAGE value="feat: 회원가입 api 연동" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: 회원가입 api 연동" />
   </component>
 </project>
