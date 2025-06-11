@@ -23,7 +23,7 @@ export default function Header() {
   const [profileUrl, setProfileUrl] = useState("")
 
   useEffect(() => {
-    const token = Cookies.get("token")
+    const token = Cookies.get("accessToken")
     const profile = Cookies.get("profileUrl")
     setIsLoggedIn(!!token)
     setProfileUrl(profile || "")
