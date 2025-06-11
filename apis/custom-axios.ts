@@ -9,7 +9,7 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-// 요청 인터셉터 -> 매 요청마다 accessToken 자동 추가
+// 요청 인터셉터 -> 매 요청마다 accessToken 자동 추가ㄴ
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = Cookies.get('accessToken');
