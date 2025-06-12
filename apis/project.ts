@@ -18,3 +18,9 @@ export async function updateProjectAPI(projectId: number, formData: FormData): P
     },
   });
 }
+
+// 프로젝트 삭제
+export async function deleteProjectAPI(projectId: number): Promise<void> {
+  await axiosInstance.delete(`/portfolio/project/${projectId}/delete`);
+}
+

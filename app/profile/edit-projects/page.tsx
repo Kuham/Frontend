@@ -21,7 +21,7 @@ import {
 import { toast } from "sonner"
 import {Project} from "@/types/user";
 import {getProject} from "@/apis/user";
-import {addProjectAPI, updateProjectAPI} from "@/apis/project";
+import {addProjectAPI, deleteProjectAPI, updateProjectAPI} from "@/apis/project";
 
 export default function EditProjectsPage() {
   const router = useRouter()
@@ -110,9 +110,16 @@ export default function EditProjectsPage() {
   };
 
   // 프로젝트 삭제
-  const deleteProject = (id: number) => {
-    setProjects(projects.filter((project) => project.id !== id))
-  }
+  const deleteProject = async (id: number) => {
+    try {
+      await deleteProjectAPI(id);
+      setProjects(projects.filter((project) => project.id !== id));
+      toast.success("프로젝트가 성공적으로 삭제되었습니다.");
+    } catch (error) {
+      console.error("프로젝트 삭제 실패:", error);
+      toast.error("프로젝트 삭제에 실패했습니다.");
+    }
+  };
 
   // 새 프로젝트 생성
   const [showNewProjectForm, setShowNewProjectForm] = useState(false)
@@ -120,7 +127,6 @@ export default function EditProjectsPage() {
   type NewProject = Omit<Project, 'id'> & {
     images: (File | string)[];
   };
-
 
   const [newProject, setNewProject] = useState<NewProject>({
     title: "",
@@ -133,8 +139,6 @@ export default function EditProjectsPage() {
     endDate: "",
     inProgress: false,
   });
-
-
 
   // 프로젝트 추가
   const addProject = async () => {
