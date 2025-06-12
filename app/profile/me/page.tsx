@@ -287,8 +287,8 @@ export default function ProfilePage() {
                                   item.images.map((img, idx) => (
                                     <div key={idx} className="rounded-md overflow-hidden">
                                       <img
-                                        src={img || "/placeholder.svg"}
-                                        alt={`${item.title} 이미지 ${idx + 1}`}
+                                        src={typeof img === "string" ? img : URL.createObjectURL(img)}
+                                        alt="..."
                                         className="w-full object-cover h-48"
                                       />
                                     </div>
