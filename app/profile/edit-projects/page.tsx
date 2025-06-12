@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import {useState, useRef, useEffect} from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -19,76 +19,39 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { toast } from "sonner"
-
-interface Project {
-  id: number;
-  title: string;
-  domain: string;
-  description: string;
-  longDescription: string;
-  image: string;
-  tags: string[];
-  period: string;
-}
+import {Project} from "@/types/user";
+import {getProject} from "@/apis/user";
+import {addProjectAPI, deleteProjectAPI, updateProjectAPI} from "@/apis/project";
 
 export default function EditProjectsPage() {
   const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // 샘플 프로젝트 데이터
-  const [projects, setProjects] = useState<Project[]>([
-    {
-      id: 1,
-      title: "영화 추천 시스템",
-      domain: "AI & 머신러닝",
-      description: "협업 필터링과 콘텐츠 기반 필터링을 결합한 하이브리드 영화 추천 시스템",
-      longDescription:
-          "이 프로젝트는 사용자의 시청 기록과 선호도를 분석하여 개인화된 영화 추천을 제공합니다. 협업 필터링 알고리즘을 사용하여 비슷한 취향을 가진 사용자들의 패턴을 파악하고, 콘텐츠 기반 필터링을 통해 사용자가 좋아했던 영화와 유사한 특성을 가진 영화를 추천합니다.",
-      image: "/placeholder.svg?height=300&width=500",
-      tags: ["Python", "TensorFlow", "추천 시스템"],
-      period: "2023년 1월 ~ 2023년 6월",
-    },
-    {
-      id: 2,
-      title: "감성 분석 모델",
-      domain: "자연어처리",
-      description: "SNS 데이터를 활용한 한국어 감성 분석 모델 개발",
-      longDescription:
-          "소셜 미디어 텍스트 데이터에서 감정을 분석하는 딥러닝 모델을 개발했습니다. BERT 기반 모델을 미세 조정하여 한국어 텍스트의 감정(긍정, 부정, 중립)을 분류합니다.",
-      image: "/placeholder.svg?height=300&width=500",
-      tags: ["NLP", "PyTorch", "BERT"],
-      period: "2022년 7월 ~ 2022년 12월",
-    },
-    {
-      id: 3,
-      title: "학습 데이터 시각화 도구",
-      domain: "데이터 시각화",
-      description: "교육 데이터를 시각화하여 학습 패턴을 분석하는 웹 애플리케이션",
-      longDescription:
-          "이 프로젝트는 온라인 교육 플랫폼에서 수집된 학습 데이터를 시각화하는 웹 애플리케이션입니다. React와 D3.js를 사용하여 사용자 친화적인 인터페이스를 구현했습니다.",
-      image: "/placeholder.svg?height=300&width=500",
-      tags: ["React", "D3.js", "데이터 시각화"],
-      period: "2022년 3월 ~ 2022년 6월",
-    },
-  ])
+  // 프로젝트
+  const [projects, setProjects] = useState<Project[]>([])
 
   // 프로젝트 수정 상태
-  const [editingProject, setEditingProject] = useState<Project | null>(null)
+  const [editingProject, setEditingProject] = useState<(Project & { images: (string | File)[] }) | null>(null);
+
 
   // 프로젝트 태그 처리
   const [newTag, setNewTag] = useState("")
 
   // 프로젝트 수정 창 열기
   const openEditDialog = (project: Project) => {
-    setEditingProject({ ...project })
-  }
+    setEditingProject({
+      ...project,
+      images: [...project.images], // string[] → (string | File)[]
+    });
+  };
+
 
   // 태그 추가
   const addTag = () => {
-    if (newTag.trim() && editingProject && !editingProject.tags.includes(newTag.trim())) {
+    if (newTag.trim() && editingProject && !editingProject.stacks.includes(newTag.trim())) {
       setEditingProject({
         ...editingProject,
-        tags: [...editingProject.tags, newTag.trim()],
+        stacks: [...editingProject.stacks, newTag.trim()],
       })
       setNewTag("")
     }
@@ -99,103 +62,209 @@ export default function EditProjectsPage() {
     if (editingProject) {
       setEditingProject({
         ...editingProject,
-        tags: editingProject.tags.filter((tag: string) => tag !== tagToRemove),
+        stacks: editingProject.stacks.filter((tag: string) => tag !== tagToRemove),
       })
     }
   }
 
   // 프로젝트 업데이트
-  const updateProject = () => {
-    if (!editingProject) return
+  const updateProject = async () => {
+    if (!editingProject) return;
 
-    setProjects(projects.map((project) => (project.id === editingProject.id ? editingProject : project)))
+    const formData = new FormData();
 
-    setEditingProject(null)
-  }
+    const projectPayload = {
+      projectName: editingProject.title,
+      stacks: editingProject.stacks,
+      description: editingProject.description,
+      oneLineDescription: editingProject.oneLineDescription,
+      startDate: editingProject.startDate,
+      endDate: editingProject.endDate,
+      inProgress: editingProject.inProgress,
+      roles: editingProject.roles,
+    };
+
+    formData.append(
+      "project",
+      new Blob([JSON.stringify(projectPayload)], { type: "application/json" })
+    );
+
+    const isFile = (value: unknown): value is File => value instanceof File;
+
+    editingProject.images.forEach((img) => {
+      if (isFile(img)) {
+        formData.append("images", img);
+      }
+    });
+
+    try {
+      await updateProjectAPI(editingProject.id, formData);
+      toast.success("프로젝트가 성공적으로 수정되었습니다.");
+      setProjects(projects.map((p) => (p.id === editingProject.id ? editingProject : p)));
+    } catch (error) {
+      console.error(error);
+      toast.error("프로젝트 수정에 실패했습니다.");
+    }
+
+    setEditingProject(null);
+  };
 
   // 프로젝트 삭제
-  const deleteProject = (id: number) => {
-    setProjects(projects.filter((project) => project.id !== id))
-  }
+  const deleteProject = async (id: number) => {
+    try {
+      await deleteProjectAPI(id);
+      setProjects(projects.filter((project) => project.id !== id));
+      toast.success("프로젝트가 성공적으로 삭제되었습니다.");
+    } catch (error) {
+      console.error("프로젝트 삭제 실패:", error);
+      toast.error("프로젝트 삭제에 실패했습니다.");
+    }
+  };
 
   // 새 프로젝트 생성
   const [showNewProjectForm, setShowNewProjectForm] = useState(false)
-  const [newProject, setNewProject] = useState<Omit<Project, 'id'>>({
+
+  type NewProject = Omit<Project, 'id'> & {
+    images: (File | string)[];
+  };
+
+  const [newProject, setNewProject] = useState<NewProject>({
     title: "",
-    domain: "",
+    roles: [],
     description: "",
-    longDescription: "",
-    image: "/placeholder.svg?height=300&width=500",
-    tags: [],
-    period: "",
-  })
+    oneLineDescription: "",
+    images: [],
+    stacks: [],
+    startDate: "",
+    endDate: "",
+    inProgress: false,
+  });
 
   // 프로젝트 추가
-  const addProject = () => {
-    const projectToAdd = {
-      id: Date.now(),
-      ...newProject,
+  const addProject = async () => {
+    const formData = new FormData();
+
+    const projectPayload = {
+      projectName: newProject.title,
+      stacks: newProject.stacks,
+      description: newProject.description,
+      oneLineDescription: newProject.oneLineDescription,
+      startDate: newProject.startDate,
+      endDate: newProject.endDate,
+      inProgress: newProject.inProgress,
+      roles: newProject.roles,
+    };
+
+    formData.append(
+      "project",
+      new Blob([JSON.stringify(projectPayload)], { type: "application/json" })
+    );
+
+    // 다수 이미지 처리 가능하도록 반복문 사용
+    const isFile = (value: unknown): value is File => {
+      return value instanceof File;
+    };
+
+    newProject.images.forEach((img) => {
+      if (isFile(img)) {
+        formData.append("images", img);
+      }
+    });
+
+    try {
+      await addProjectAPI(formData);
+      toast.success("프로젝트가 성공적으로 추가되었습니다.");
+      setProjects([
+        ...projects,
+        {
+          id: Date.now(),
+          ...newProject,
+          images: newProject.images.map((img) =>
+            typeof img === "string" ? img : URL.createObjectURL(img)
+          ),
+        },
+      ]);
+
+    } catch (error) {
+      console.error(error);
+      toast.error("프로젝트 추가에 실패했습니다.");
     }
 
-    setProjects([...projects, projectToAdd])
     setNewProject({
       title: "",
-      domain: "",
+      roles: [],
       description: "",
-      longDescription: "",
-      image: "/placeholder.svg?height=300&width=500",
-      tags: [],
-      period: "",
-    })
-    setShowNewProjectForm(false)
-  }
+      oneLineDescription: "",
+      images: [],
+      stacks: [],
+      startDate: "",
+      endDate: "",
+      inProgress: false,
+    });
+    setShowNewProjectForm(false);
+  };
+
 
   // 이미지 업로드 처리
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, isNewProject: boolean = false) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+  const handleImageUpload = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    isNewProject: boolean = false
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) { // 5MB 제한
-      toast.error("파일 크기는 5MB를 초과할 수 없습니다.")
-      return
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("파일 크기는 5MB를 초과할 수 없습니다.");
+      return;
     }
 
     if (!file.type.startsWith("image/")) {
-      toast.error("이미지 파일만 업로드할 수 있습니다.")
-      return
+      toast.error("이미지 파일만 업로드할 수 있습니다.");
+      return;
     }
 
-    const reader = new FileReader()
-    reader.onloadend = () => {
-      if (isNewProject) {
-        setNewProject({
-          ...newProject,
-          image: reader.result as string
-        })
-      } else if (editingProject) {
-        setEditingProject({
-          ...editingProject,
-          image: reader.result as string
-        })
-      }
+    // File 객체 그대로 상태에 저장
+    if (isNewProject) {
+      setNewProject({
+        ...newProject,
+        images: [file],
+      });
+    } else if (editingProject) {
+      setEditingProject({
+        ...editingProject,
+        images: [file],
+      });
     }
-    reader.readAsDataURL(file)
-  }
+  };
+
 
   // 이미지 삭제 처리
   const handleImageDelete = (isNewProject: boolean = false) => {
     if (isNewProject) {
       setNewProject({
         ...newProject,
-        image: "/placeholder.svg?height=300&width=500"
+        images: ["/placeholder.svg?height=300&width=500"]
       })
     } else if (editingProject) {
       setEditingProject({
         ...editingProject,
-        image: "/placeholder.svg?height=300&width=500"
+        images: ["/placeholder.svg?height=300&width=500"]
       })
     }
   }
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const data = await getProject();
+        setProjects(data);
+      } catch (error) {
+        console.error("프로젝트 데이터를 불러오는 데 실패했습니다:", error);
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   return (
       <div className="container py-8">
@@ -219,7 +288,13 @@ export default function EditProjectsPage() {
                   <div className="flex justify-between gap-4">
                     <div className="relative w-32 h-32 rounded-lg overflow-hidden">
                       <Image
-                        src={project.image}
+                        src={
+                          typeof project.images[0] === "string"
+                            ? project.images[0]
+                            : project.images[0]
+                              ? URL.createObjectURL(project.images[0])
+                              : "/placeholder.svg?height=300&width=500"
+                        }
                         alt={project.title}
                         fill
                         className="object-cover"
@@ -228,11 +303,12 @@ export default function EditProjectsPage() {
                     <div className="flex-1">
                       <h3 className="text-xl font-bold">{project.title}</h3>
                       <p className="text-sm text-muted-foreground mb-2">
-                        {project.domain} | {project.period}
+                        {project.roles} | {project.startDate} ~ {project.endDate}
                       </p>
+                      <p className="text-sm mb-2">{project.oneLineDescription}</p>
                       <p className="text-sm mb-2">{project.description}</p>
                       <div className="flex flex-wrap gap-2">
-                        {project.tags.map((tag) => (
+                        {project.stacks.map((tag) => (
                             <Badge key={tag} variant="secondary">
                               {tag}
                             </Badge>
@@ -280,10 +356,16 @@ export default function EditProjectsPage() {
                     <div className="flex items-center gap-4">
                       <div className="relative w-40 h-40 rounded-lg overflow-hidden border">
                         <Image
-                            src={editingProject.image}
-                            alt={editingProject.title}
-                            fill
-                            className="object-cover"
+                          src={
+                            editingProject.images[0]
+                              ? typeof editingProject.images[0] === "string"
+                                ? editingProject.images[0]
+                                : URL.createObjectURL(editingProject.images[0])
+                              : "/placeholder.svg?height=300&width=500"
+                          }
+                          alt={editingProject.title}
+                          fill
+                          className="object-cover"
                         />
                       </div>
                       <div className="flex flex-col gap-2">
@@ -323,32 +405,38 @@ export default function EditProjectsPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="domain">프로젝트 도메인</Label>
+                      <Label htmlFor="domain">맡은 역할</Label>
                       <Input
                           id="domain"
-                          value={editingProject.domain}
-                          onChange={(e) => setEditingProject({ ...editingProject, domain: e.target.value })}
+                          value={editingProject.roles}
+                          onChange={(e) => setEditingProject({ ...editingProject, roles: [e.target.value] })}
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="period">기간</Label>
-                    <Input
-                        id="period"
-                        value={editingProject.period}
-                        onChange={(e) => setEditingProject({ ...editingProject, period: e.target.value })}
-                        placeholder="2023년 1월 ~ 2023년 6월"
-                    />
+                    <div className="grid grid-cols-2 gap-4">
+                      <Input
+                        type="date"
+                        value={editingProject?.startDate || ""}
+                        onChange={(e) => editingProject && setEditingProject({ ...editingProject, startDate: e.target.value })}
+                      />
+                      <Input
+                        type="date"
+                        value={editingProject?.endDate || ""}
+                        onChange={(e) => editingProject && setEditingProject({ ...editingProject, endDate: e.target.value })}
+                      />
+                    </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="description">간단한 설명</Label>
+                    <Label htmlFor="description">한 줄 설명</Label>
                     <Textarea
-                        id="description"
-                        value={editingProject.description}
-                        onChange={(e) => setEditingProject({ ...editingProject, description: e.target.value })}
-                        rows={2}
+                      id="description"
+                      value={editingProject.oneLineDescription}
+                      onChange={(e) => setEditingProject({ ...editingProject, oneLineDescription: e.target.value })}
+                      rows={4}
                     />
                   </div>
 
@@ -356,8 +444,8 @@ export default function EditProjectsPage() {
                     <Label htmlFor="longDescription">상세 설명</Label>
                     <Textarea
                         id="longDescription"
-                        value={editingProject.longDescription}
-                        onChange={(e) => setEditingProject({ ...editingProject, longDescription: e.target.value })}
+                        value={editingProject.description}
+                        onChange={(e) => setEditingProject({ ...editingProject, description: e.target.value })}
                         rows={4}
                     />
                   </div>
@@ -365,7 +453,7 @@ export default function EditProjectsPage() {
                   <div className="space-y-2">
                     <Label>태그</Label>
                     <div className="flex flex-wrap gap-2 mb-2">
-                      {editingProject.tags.map((tag: string) => (
+                      {editingProject.stacks.map((tag: string) => (
                           <Badge key={tag} variant="secondary" className="pl-2 pr-1 py-1 flex items-center gap-1">
                             {tag}
                             <Button
@@ -416,13 +504,19 @@ export default function EditProjectsPage() {
                 <div className="flex items-center gap-4">
                   <div className="relative w-40 h-40 rounded-lg overflow-hidden border">
                     <Image
-                        src={newProject.image}
-                        alt="새 프로젝트 이미지"
-                        fill
-                        className="object-cover"
+                      src={
+                        newProject.images[0]
+                          ? typeof newProject.images[0] === "string"
+                            ? newProject.images[0] // 기존 이미지 URL
+                            : URL.createObjectURL(newProject.images[0]) // 새로 업로드한 File 객체
+                          : "/placeholder.svg?height=300&width=500"
+                      }
+                      alt="새 프로젝트 이미지"
+                      fill
+                      className="object-cover"
                     />
                   </div>
-                  <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2">
                     <input
                         type="file"
                         accept="image/*"
@@ -459,31 +553,38 @@ export default function EditProjectsPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="newDomain">프로젝트 도메인</Label>
+                  <Label htmlFor="newDomain">맡은 역할</Label>
                   <Input
                       id="newDomain"
-                      value={newProject.domain}
-                      onChange={(e) => setNewProject({ ...newProject, domain: e.target.value })}
+                      value={newProject.roles}
+                      onChange={(e) => setNewProject({ ...newProject, roles: [e.target.value] })}
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="newPeriod">기간</Label>
-                <Input
-                    id="newPeriod"
-                    value={newProject.period}
-                    onChange={(e) => setNewProject({ ...newProject, period: e.target.value })}
-                    placeholder="2023년 1월 ~ 2023년 6월"
-                />
+                <div className="grid grid-cols-2 gap-4">
+                  <Input
+                    type="date"
+                    value={newProject.startDate}
+                    onChange={(e) => setNewProject({ ...newProject, startDate: e.target.value })}
+                  />
+                  <Input
+                    type="date"
+                    value={newProject.endDate}
+                    onChange={(e) => setNewProject({ ...newProject, endDate: e.target.value })}
+                  />
+                </div>
+
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="newDescription">간단한 설명</Label>
+                <Label htmlFor="newDescription">한 줄 설명</Label>
                 <Textarea
                     id="newDescription"
-                    value={newProject.description}
-                    onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
+                    value={newProject.oneLineDescription}
+                    onChange={(e) => setNewProject({ ...newProject, oneLineDescription: e.target.value })}
                     rows={2}
                 />
               </div>
@@ -492,8 +593,8 @@ export default function EditProjectsPage() {
                 <Label htmlFor="newLongDescription">상세 설명</Label>
                 <Textarea
                     id="newLongDescription"
-                    value={newProject.longDescription}
-                    onChange={(e) => setNewProject({ ...newProject, longDescription: e.target.value })}
+                    value={newProject.description}
+                    onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
                     rows={4}
                 />
               </div>
@@ -501,7 +602,7 @@ export default function EditProjectsPage() {
               <div className="space-y-2">
                 <Label>태그</Label>
                 <div className="flex flex-wrap gap-2 mb-2">
-                  {newProject.tags.map((tag: string) => (
+                  {newProject.stacks.map((tag: string) => (
                       <Badge key={tag} variant="secondary" className="pl-2 pr-1 py-1 flex items-center gap-1">
                         {tag}
                         <Button
@@ -511,7 +612,7 @@ export default function EditProjectsPage() {
                             onClick={() =>
                                 setNewProject({
                                   ...newProject,
-                                  tags: newProject.tags.filter((t) => t !== tag),
+                                  stacks: newProject.stacks.filter((t) => t !== tag),
                                 })
                             }
                         >
@@ -528,10 +629,10 @@ export default function EditProjectsPage() {
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
                           e.preventDefault()
-                          if (newTag.trim() && !newProject.tags.includes(newTag.trim())) {
+                          if (newTag.trim() && !newProject.stacks.includes(newTag.trim())) {
                             setNewProject({
                               ...newProject,
-                              tags: [...newProject.tags, newTag.trim()],
+                              stacks: [...newProject.stacks, newTag.trim()],
                             })
                             setNewTag("")
                           }
@@ -541,10 +642,10 @@ export default function EditProjectsPage() {
                   <Button
                       type="button"
                       onClick={() => {
-                        if (newTag.trim() && !newProject.tags.includes(newTag.trim())) {
+                        if (newTag.trim() && !newProject.stacks.includes(newTag.trim())) {
                           setNewProject({
                             ...newProject,
-                            tags: [...newProject.tags, newTag.trim()],
+                            stacks: [...newProject.stacks, newTag.trim()],
                           })
                           setNewTag("")
                         }
