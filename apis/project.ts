@@ -1,8 +1,18 @@
 import axiosInstance from "@/apis/custom-axios";
 import {Project} from "@/types/user";
 
-export async function addProject(formData: FormData): Promise<void> {
+// 프로젝트 생성
+export async function addProjectAPI(formData: FormData): Promise<void> {
   await axiosInstance.post("/portfolio/project/add", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+}
+
+// 프로젝트 수정
+export async function updateProjectAPI(projectId: number, formData: FormData): Promise<void> {
+  await axiosInstance.put(`/portfolio/project/${projectId}/edit`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },

@@ -21,54 +21,14 @@ import {
 import { toast } from "sonner"
 import {Project} from "@/types/user";
 import {getProject} from "@/apis/user";
-import {addProject as addProjectAPI} from "@/apis/project";
+import {addProjectAPI, updateProjectAPI} from "@/apis/project";
 
 export default function EditProjectsPage() {
   const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // 샘플 프로젝트 데이터
-  const [projects, setProjects] = useState<Project[]>([
-  //   {
-  //   id: 1,
-  //   title: "영화 추천 시스템",
-  //   roles: ["AI & 머신러닝"],
-  //   oneLineDescription: "협업 필터링과 콘텐츠 기반 필터링을 결합한 하이브리드 영화 추천 시스템",
-  //   description:
-  //     "이 프로젝트는 사용자의 시청 기록과 선호도를 분석하여 개인화된 영화 추천을 제공합니다. 협업 필터링 알고리즘을 사용하여 비슷한 취향을 가진 사용자들의 패턴을 파악하고, 콘텐츠 기반 필터링을 통해 사용자가 좋아했던 영화와 유사한 특성을 가진 영화를 추천합니다.",
-  //   images: ["/placeholder.svg?height=300&width=500"],
-  //   stacks: ["Python", "TensorFlow", "추천 시스템"],
-  //   startDate: "2023년 1월",
-  //   endDate: "2023년 6월",
-  //   inProgress: false
-  // },
-  //   {
-  //     id: 2,
-  //     title: "감성 분석 모델",
-  //     roles: ["자연어처리"],
-  //     oneLineDescription: "SNS 데이터를 활용한 한국어 감성 분석 모델 개발",
-  //     description:
-  //       "소셜 미디어 텍스트 데이터에서 감정을 분석하는 딥러닝 모델을 개발했습니다. BERT 기반 모델을 미세 조정하여 한국어 텍스트의 감정(긍정, 부정, 중립)을 분류합니다.",
-  //     images: ["/placeholder.svg?height=300&width=500"],
-  //     stacks: ["NLP", "PyTorch", "BERT"],
-  //     startDate: "2023년 1월",
-  //     endDate: "2023년 6월",
-  //     inProgress: false
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "학습 데이터 시각화 도구",
-  //     roles: ["데이터 시각화"],
-  //     oneLineDescription: "교육 데이터를 시각화하여 학습 패턴을 분석하는 웹 애플리케이션",
-  //     description:
-  //       "이 프로젝트는 온라인 교육 플랫폼에서 수집된 학습 데이터를 시각화하는 웹 애플리케이션입니다. React와 D3.js를 사용하여 사용자 친화적인 인터페이스를 구현했습니다.",
-  //     images: ["/placeholder.svg?height=300&width=500"],
-  //     stacks: ["React", "D3.js", "데이터 시각화"],
-  //     startDate: "2023년 1월",
-  //     endDate: "2023년 6월",
-  //     inProgress: false
-  //   }
-    ])
+  // 프로젝트
+  const [projects, setProjects] = useState<Project[]>([])
 
   // 프로젝트 수정 상태
   const [editingProject, setEditingProject] = useState<(Project & { images: (string | File)[] }) | null>(null);
@@ -108,13 +68,46 @@ export default function EditProjectsPage() {
   }
 
   // 프로젝트 업데이트
-  const updateProject = () => {
-    if (!editingProject) return
+  const updateProject = async () => {
+    if (!editingProject) return;
 
-    setProjects(projects.map((project) => (project.id === editingProject.id ? editingProject : project)))
+    const formData = new FormData();
 
-    setEditingProject(null)
-  }
+    const projectPayload = {
+      projectName: editingProject.title,
+      stacks: editingProject.stacks,
+      description: editingProject.description,
+      oneLineDescription: editingProject.oneLineDescription,
+      startDate: editingProject.startDate,
+      endDate: editingProject.endDate,
+      inProgress: editingProject.inProgress,
+      roles: editingProject.roles,
+    };
+
+    formData.append(
+      "project",
+      new Blob([JSON.stringify(projectPayload)], { type: "application/json" })
+    );
+
+    const isFile = (value: unknown): value is File => value instanceof File;
+
+    editingProject.images.forEach((img) => {
+      if (isFile(img)) {
+        formData.append("images", img);
+      }
+    });
+
+    try {
+      await updateProjectAPI(editingProject.id, formData);
+      toast.success("프로젝트가 성공적으로 수정되었습니다.");
+      setProjects(projects.map((p) => (p.id === editingProject.id ? editingProject : p)));
+    } catch (error) {
+      console.error(error);
+      toast.error("프로젝트 수정에 실패했습니다.");
+    }
+
+    setEditingProject(null);
+  };
 
   // 프로젝트 삭제
   const deleteProject = (id: number) => {
@@ -308,6 +301,7 @@ export default function EditProjectsPage() {
                       <p className="text-sm text-muted-foreground mb-2">
                         {project.roles} | {project.startDate} ~ {project.endDate}
                       </p>
+                      <p className="text-sm mb-2">{project.oneLineDescription}</p>
                       <p className="text-sm mb-2">{project.description}</p>
                       <div className="flex flex-wrap gap-2">
                         {project.stacks.map((tag) => (
@@ -433,17 +427,7 @@ export default function EditProjectsPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="description">간단한 설명</Label>
-                    <Textarea
-                        id="description"
-                        value={editingProject.description}
-                        onChange={(e) => setEditingProject({ ...editingProject, description: e.target.value })}
-                        rows={2}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="description">한줄 설명</Label>
+                    <Label htmlFor="description">한 줄 설명</Label>
                     <Textarea
                       id="description"
                       value={editingProject.oneLineDescription}
@@ -592,7 +576,7 @@ export default function EditProjectsPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="newDescription">간단한 설명</Label>
+                <Label htmlFor="newDescription">한 줄 설명</Label>
                 <Textarea
                     id="newDescription"
                     value={newProject.oneLineDescription}
