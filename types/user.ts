@@ -44,7 +44,7 @@ export interface Project {
   startDate: string;
   endDate: string;
   inProgress: boolean;
-  images: string[];
+  images: (string | File)[];
   roles: string[];
   expanded?: boolean;
 }
