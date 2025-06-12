@@ -1,5 +1,4 @@
 import axiosInstance from "@/apis/custom-axios";
-import {Project} from "@/types/user";
 
 // 프로젝트 생성
 export async function addProjectAPI(formData: FormData): Promise<void> {
