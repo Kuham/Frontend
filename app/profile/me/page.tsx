@@ -33,6 +33,78 @@ import {clearAllCookies} from "@/utils/clearAllCookies";
 import {deleteUser, getActivity, getLicense, getPortfolio, getProject} from "@/apis/user";
 import {Activity, GetPortfolioResponse, License, Project} from "@/types/user";
 
+const dummyActivities: Activity[] = [
+  {
+    id: 1,
+    name: "대학 캠퍼스 내비게이션 앱",
+    roles: ["머신러닝 엔지니어"],
+    oneLineDescription: "캠퍼스 내 최적 경로 추천 알고리즘 개발",
+    description:
+      "교내 창업 동아리에서 개발한 캠퍼스 내비게이션 앱 프로젝트의 머신러닝 엔지니어로 참여했습니다. 사용자의 이동 패턴과 시간대별 혼잡도를 분석하여 최적의 경로를 추천하는 알고리즘을 개발했습니다.",
+    startDate: "2023-09-01",
+    endDate: "2023-12-31",
+    inProgress: false,
+    images: ["/placeholder.svg?height=300&width=500"],
+    expanded: false,
+  },
+  {
+    id: 2,
+    name: "학생 학습 패턴 분석 연구",
+    roles: ["데이터 분석가"],
+    oneLineDescription:
+      "온라인 학습 플랫폼의 사용자 데이터를 분석하여 학습 패턴 연구",
+    description:
+      "교내 교육공학 연구소에서 진행한 학생들의 온라인 학습 패턴 분석 프로젝트에 데이터 분석가로 참여했습니다.",
+    startDate: "2023-03-01",
+    endDate: "2023-08-31",
+    inProgress: false,
+    images: ["/placeholder.svg?height=300&width=500"],
+    expanded: false,
+  },
+  {
+    id: 3,
+    name: "산학협력 AI 프로젝트",
+    roles: ["개발 리더"],
+    oneLineDescription:
+      "자동차 부품 결함 탐지를 위한 이미지 인식 시스템 개발",
+    description:
+      "지역 자동차 부품 제조 기업과의 산학협력 프로젝트에서 개발 리더를 맡아 AI 기반 결함 탐지 시스템을 개발했습니다.",
+    startDate: "2022-06-01",
+    endDate: "2022-12-31",
+    inProgress: false,
+    images: ["/placeholder.svg?height=300&width=500"],
+    expanded: false,
+  },
+];
+
+const dummyLicenses: License[] = [
+  {
+    id: 1,
+    licenseName: "정보처리기사",
+    licenseDate: "2022-05-20",
+    licenseOrganization: "한국산업인력공단",
+  },
+  {
+    id: 2,
+    licenseName: "SQLD",
+    licenseDate: "2021-11-15",
+    licenseOrganization: "한국데이터산업진흥원",
+  },
+  {
+    id: 3,
+    licenseName: "TensorFlow Developer Certificate",
+    licenseDate: "2023-03-08",
+    licenseOrganization: "Google",
+  },
+  {
+    id: 4,
+    licenseName: "AWS Certified Solutions Architect",
+    licenseDate: "2022-08-25",
+    licenseOrganization: "Amazon Web Services",
+  },
+];
+
+
 export default function ProfilePage() {
   const router = useRouter()
   const [user, setUser] = useState<GetPortfolioResponse | null>(null);
@@ -80,7 +152,7 @@ export default function ProfilePage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [portfolio, rawProjects, rawActivities, licenses] = await Promise.all([
+        const [portfolio, rawProjects, rawActivities, rawLicenses] = await Promise.all([
           getPortfolio(),
           getProject(),
           getActivity(),
@@ -88,10 +160,18 @@ export default function ProfilePage() {
         ]);
 
         setUser(portfolio);
-        // expanded 추가!
         setProjects(rawProjects?.map((p) => ({ ...p, expanded: false })));
-        setActivities(rawActivities?.map((a) => ({ ...a, expanded: false })));
-        setCertifications(licenses);
+        // setActivities(rawActivities?.map((a) => ({ ...a, expanded: false })));
+        // setCertifications(licenses);
+
+        const activityList =
+          rawActivities.length > 0
+            ? rawActivities.map((a) => ({ ...a, expanded: false }))
+            : dummyActivities;
+        setActivities(activityList);
+
+        const licenseList = rawLicenses.length > 0 ? rawLicenses : dummyLicenses;
+        setCertifications(licenseList);
       } catch (error) {
         console.error('데이터 불러오기 실패:', error);
       } finally {
